@@ -15,7 +15,9 @@ class UploadWorker(context: Context, workerParameters: WorkerParameters) :
     }
     override fun doWork(): Result {
         try {
-            for (i in 1..60000)
+            val input = inputData
+            val receivedInput = input.getInt(MainActivity.KEY_INPUT, 1)
+            for (i in 1..receivedInput)
                 Log.i("MYTAG", "Uploading $i")
 
             val simpleDateFormat = SimpleDateFormat("dd/MM/yyyy hh:mm:ss", Locale.getDefault())
