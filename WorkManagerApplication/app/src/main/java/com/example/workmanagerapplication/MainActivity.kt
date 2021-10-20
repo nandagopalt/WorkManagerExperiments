@@ -29,14 +29,22 @@ class MainActivity : AppCompatActivity() {
                                     setConstraints(inputConstraints).build()
         val filterRequest = OneTimeWorkRequest.Builder(FilteringWorker::class.java).build()
         val compressingRequest = OneTimeWorkRequest.Builder(CompressingWorker::class.java).build()
+
+        val oneTimeRequestList = mutableListOf<OneTimeWorkRequest>()
+        oneTimeRequestList.add(filterRequest)
+        oneTimeRequestList.add(compressingRequest)
+
         //val uploadRequest = PeriodicWorkRequest.Builder(UploadWorker::class.java, 16, TimeUnit.MINUTES).
         //setInputData(inputData).
         //setConstraints(inputConstraints).build()
         val workManagerInstance = WorkManager.getInstance(applicationContext)
-        workManagerInstance.beginWith(filterRequest).
+        /*workManagerInstance.beginWith(filterRequest).
             then(compressingRequest).
             then(uploadRequest).
-            enqueue()
+            enqueue()*/
+        workManagerInstance.beginWith(oneTimeRequestList).
+                            then(uploadRequest).
+                            enqueue()
         workManagerInstance.getWorkInfoByIdLiveData(uploadRequest.id).observe(this, Observer {
             Log.i("MYTAG", it.state.name)
             binding.text.text = it.state.name
